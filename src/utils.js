@@ -6,7 +6,7 @@ Array.prototype.contains = function(vl) {
 		}
 	}
 return _reg;
-}
+};
 String.prototype.replaceAll = function(token, newToken, ignoreCase) {
 	var str = this.toString();
 	if(str && token) {
@@ -52,4 +52,4 @@ return str;
 	     }
      }
  return _reg;
- }
+ };
