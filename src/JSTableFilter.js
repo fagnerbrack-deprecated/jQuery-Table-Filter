@@ -14,7 +14,7 @@
  * $('table' ).syoTableFilter([Object parameters]);
  */
 (function($) {
-	$.fn.syoTableFilter = function(args) {
+	$.fn.JSTableFilter = function(args) {
 		var options = $.extend({
 			inputClasses: undefined, //custom classes that will be set in the filter inputs that will be created
 			trClasses: undefined, //custom classes that will be set in the TR(s) that will be created to the filters
