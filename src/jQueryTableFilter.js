@@ -9,9 +9,6 @@
  * The filter verifies the content splitting each word as it is a different search ("A test" matches with "A - test" and "test A")
  * The only requirement for the use of this plugin is that it is used ONLY in a table with at least a <thead>, <th> and <tbody>
  * It is created a TR that informs the user when a filter did not return any result. It is positioned below the last TR of the tfoot. If there's no tfoot, jQuery Table Filter creates it.
- * 
- * Use:
- * $('table').syoTableFilter([Object parameters]);
  */
 (function($) {
 	$.fn.tableFilter = function(args) {
