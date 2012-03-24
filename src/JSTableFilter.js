@@ -8,10 +8,10 @@
  * The TRs that don't match with desired filter are hidden and any input inside any TD is disabled (the input is enabled when the TR is visible again)
  * The filter verifies the content splitting each word as it is a different search ("A test" matches with "A - test" and "test A")
  * The only requirement for the use of this plugin is that it is used ONLY in a table with at least a <thead>, <th> and <tbody>
- * It is created a TR that informs the user when a filter did not return any result. It is positioned below the last TR of the tfoot. If there's no tfoot, JS Table FIlter creates it.
+ * It is created a TR that informs the user when a filter did not return any result. It is positioned below the last TR of the tfoot. If there's no tfoot, JS Table Filter creates it.
  * 
  * Use:
- * $('table' ).syoTableFilter([Object parameters]);
+ * $('table').syoTableFilter([Object parameters]);
  */
 (function($) {
 	$.fn.JSTableFilter = function(args) {
