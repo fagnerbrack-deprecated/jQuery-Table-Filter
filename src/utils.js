@@ -7,22 +7,21 @@ Array.prototype.contains = function(vl) {
 	}
 return _reg;
 };
+/**
+ * ReplaceAll by Fagner Brack (MIT Licensed)
+ * Replaces all occurences of a substring in a string
+ */
 String.prototype.replaceAll = function(token, newToken, ignoreCase) {
-	var str = this.toString();
-	if(str && token) {
-		if(ignoreCase === true) {
-			var i = -1;
-			while((i = str.toUpperCase().indexOf(token.toUpperCase())) != -1) {
-			    var sb = new syoStringBuilder();
-			    sb.append(str.substring(0, i));
-				sb.append(newToken);
-				sb.append(str.substring(i + token.length));
-			    str = sb.getString();
-			}
-		} else {
-			while(str.indexOf(token) != -1) {
-				str = str.replace(token, newToken);
-			}
+	var str, i = -1, _token;
+	if((str = this.toString()) && typeof token === "string") {
+		_token = ignoreCase === true? token.toLowerCase() : undefined;
+		while((i = (
+			_token !== undefined? 
+				str.toLowerCase().indexOf(_token, i + 1) : str.indexOf(token, i + 1)
+		)) !== -1 ) {
+		    str = str.substring(0, i)
+		    		.concat(newToken)
+		    		.concat(str.substring(i + token.length));
 		}
 	}
 return str;
