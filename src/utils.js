@@ -1,16 +1,12 @@
-Array.prototype.contains = function(vl) {
-	var _reg = 0;
-	for(var i = 0; i<this.length; i++) {
-		if(this[i] === vl) {
+Array.prototype.contains = function(obj) {
+	var _reg = 0, t = this, i = t.length;
+	while(i--) { //!== 0
+		if(t[i] === obj) {
 			_reg++;
 		}
 	}
 return _reg;
 };
-/**
- * ReplaceAll by Fagner Brack (MIT Licensed)
- * Replaces all occurrences of a substring in a string
- */
 String.prototype.replaceAll = function(token, newToken, ignoreCase) {
 	var str, i = -1, _token;
 	if((str = this.toString()) && typeof token === "string") {
@@ -32,7 +28,7 @@ String.prototype.replaceAll = function(token, newToken, ignoreCase) {
 	}
 return str;
 };
- String.prototype.contains = function(token, ignoreCase) {
+String.prototype.contains = function(token, ignoreCase) {
      var _reg = 0;
      
      if(token) {
