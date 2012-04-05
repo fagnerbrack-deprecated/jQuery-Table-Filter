@@ -1,5 +1,5 @@
 /**
- * jQuery Table Filter 1.0.3 (jQuery 1.7+)
+ * jQuery Table Filter 0.4 (jQuery 1.7+)
  * (c) 2012-2012 Fagner Martins Brack <fagnerbrack.com>
  * MIT license
  * 
@@ -40,11 +40,11 @@
 			var str = [];
 			str.push("<tr class='" + ($.type(trClasses) === 'string'? trClasses : '') + "'>");
 				for(var i = 0; i<colNumber; i++) {
-					str.push("<td style='text-align: center; vertical-align: middle; padding: 0; margin: 0;'>");
+					str.push("<th style='text-align: center; vertical-align: middle; padding: 0; margin: 0;'>");
 						if(!$.isArray(columns) || !columns.length || columns.contains(i)) {
 							str.push("<input type='text' class='" + ($.type(inputClasses) === 'string'? inputClasses : '') + "'/>");
 						}
-					str.push("</td>");
+					str.push("</th>");
 				}
 			str.push("</tr>");
 		return $(str.join(''));
@@ -93,13 +93,13 @@
 		function bind($customTR, $table) {
 			var $bodyTRs = $table.find('tbody tr');
 			var $bodyTDs = $bodyTRs.find('td').each(markTDs);
-			var $headTDs = $customTR.find('td');
-			var $allInputs = $headTDs.find('input');
-			var colNumber = $headTDs.length;
+			var $headTHs = $customTR.find('th');
+			var $allInputs = $headTHs.find('input');
+			var colNumber = $headTHs.length;
 			var ignoreCase = option('ignoreCase');
 			var delay = option('delay');
 			
-			$headTDs.each(function(index, element) {
+			$headTHs.each(function(index, element) {
 				var $TD = $(this);
 				var _applyFilter = function() {
 					var $TRsToHide = $();
