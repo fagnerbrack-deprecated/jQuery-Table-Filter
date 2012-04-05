@@ -1,0 +1,636 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>jQueryTableFilter Unit Test</title>
+		
+		<link rel="stylesheet" href="../qunit/main.css" media="all" charset="UTF-8" />
+		<link rel="stylesheet" href="../qunit/qunit.css" media="all" charset="UTF-8" />
+		
+		<style type="text/css">
+			table {
+				border-spacing: 2px;
+			}
+			table td {
+				border: 1px dotted #000;
+				padding: 5px;
+			}
+			
+			.filter-class {
+				border: 1px solid #000;
+			}
+			
+			.input-class {
+				background-color: #CCC;
+			}
+			
+			thead tr {
+				background-color: #EEE;
+			}
+		</style>
+		
+		<script type="text/javascript" src="../qunit/qunit.js"></script>
+		<script type="text/javascript" src="../lib/jquery-1.7.1.js"></script>
+		<script type="text/javascript" src="../src/utils.js"></script>
+		<script type="text/javascript" src="../src/jQueryTableFilter.js"></script>
+		<script type="text/javascript" language="Javascript">
+			$(function() {
+				
+				//Use _same to test code to be executed with delay > 0
+				var _same = function(arg0, arg1, arg2, arg3) {
+					stop();
+					setTimeout(function() {
+						start();
+						return same(arg0.apply(null, arg1 || []), arg2, arg3);
+					}, 0);
+				}
+				
+				$("#t1").tableFilter({
+					inputClasses: 'input-class filter-class',
+					trClasses: 'tr-class filter-class',
+					thClasses: 'th-class filter-class',
+					delay: 0,
+					columns: null
+				});
+				$("#t2").tableFilter({ delay: 100 });
+				$("#t3").tableFilter({
+					ignoreCase: true,
+					columns: [1, 2, 3, 4],
+					delay: 0,
+					emptyMessage: "Custom Message..."
+				});
+				$("#t4").tableFilter({
+					emptyMessage: "this should not appear",
+					delay: 0
+				}).tableFilter({
+					emptyMessage: "this should appear",
+					delay: 0
+				});
+				
+				var timeoutSpeed = 0;
+				
+				//==============================================================================================
+				//	T1
+				//==============================================================================================
+				module("Table 1");
+				test("Passing custom classes", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t1");
+					
+					//Conditions
+					var $inputsWithClasses = $table.find("thead input.input-class.filter-class");
+					var $trsWithClasses = $table.find("thead tr.tr-class.filter-class");
+					var $thsWithClasses = $table.find("thead th.th-class.filter-class");
+					
+					//Result
+					same($trsWithClasses.length, 1, "Testing TR classes");
+					same($inputsWithClasses.length, 4, "Testing input classes");
+					same($inputsWithClasses.length, 4, "Testing TH classes");
+				});
+				
+				test("ignoreCase is default false", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t1");
+					
+					//Conditions
+					setInput($table, 0, "FAGNER").trigger("keyup.jQueryTableFilter");
+					
+					//Result
+					_same(getTRText, [$table, 0], "", "No result at all");
+				});
+				
+				test("Normal Filtering", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t1");
+					
+					//Conditions
+					setInput($table, 0, "rack");
+					setInput($table, 3, "5").trigger("keyup.jQueryTableFilter");
+					
+					//Result
+					_same(getTRText, [$table, 0], "Richard Markson Surname Brack", "First TR is correct");
+				});
+				
+				test("Erasing inputs", function() {
+					
+					//Initialize
+					var $table = $("#t1");
+					
+					//Conditions
+					eraseInput($table, 3).trigger("keyup.jQueryTableFilter");
+					
+					//Result
+					_same(getTRText, [$table, 0], "Fagner Brack", "First TR is correct");
+					_same(getTRText, [$table, 1], "Richard Markson Surname Brack", "Second TR is correct");
+				});
+				
+				test("Erasing all inputs", function() {
+					
+					//Initialize
+					//Conditions
+					var $table = eraseAllInputs("#t1", true);
+					
+					//Result
+					_same(getTRText, [$table, 0], "Fagner Brack", "First TR is correct");
+					_same(getTRText, [$table, 1], "Steve P. Jobs", "Second TR is correct");
+					_same(getTRText, [$table, 2], "Richard Markson Surname Brack", "Third TR is correct");
+				});
+				
+				test("Normal filtering with one char", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t1");
+					
+					//Conditions
+					setInput($table, 2, "i").trigger("keyup.jQueryTableFilter");
+					
+					//Conditions
+					_same(getTRText, [$table, 0], "Fagner Brack", "First TR is correct");
+					_same(getTRText, [$table, 1], "Steve P. Jobs", "Second TR is correct");
+				});
+				
+				test("Filtering using space", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t1");
+					
+					//Conditions
+					setInput($table, 0, "Brack a").trigger("keyup.jQueryTableFilter");
+					
+					//Result
+					_same(getTRText, [$table, 0], "Fagner Brack", "First TR is correct");
+					_same(getTRText, [$table, 1], "Richard Markson Surname Brack", "Second TR is correct");
+				});
+				
+				test("Filtering without cleaning last filter", function() {
+					
+					//Initialize
+					var $table = $("#t1");
+					
+					//Conditions
+					setInput($table, 2, "a g").trigger("keyup.jQueryTableFilter");
+					
+					//Result
+					_same(getTRText, [$table, 0], "Richard Markson Surname Brack", "First TR is correct");
+				});
+				
+				test("Should ignore a lot of blank spaces", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t1");
+					
+					//Conditions
+					setInput($table, 0, "                               ").trigger("keyup.jQueryTableFilter");
+					
+					//Result
+					_same(getTRText, [$table, 0], "Fagner Brack", "First TR is correct");
+					_same(getTRText, [$table, 1], "Steve P. Jobs", "Second TR is correct");
+					_same(getTRText, [$table, 2], "Richard Markson Surname Brack", "Third TR is correct");
+				});
+				
+				test("Filter with double quotes should consider whole word", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t1");
+					
+					//Conditions
+					setInput($table, 0, "\"Brack\"").trigger("keyup.jQueryTableFilter");
+					
+					_same(getTRText, [$table, 0], "Fagner Brack", "First TR is correct");
+					_same(getTRText, [$table, 1], "Richard Markson Surname Brack", "Second TR is correct");
+				});
+				
+				test("Filter with double quotes should consider whole word and spaces rule", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t1");
+					
+					//Conditions
+					setInput($table, 0, "\"Brack\"");
+					setInput($table, 1, "o n r").trigger("keyup.jQueryTableFilter");
+					
+					_same(getTRText, [$table, 0], "Fagner Brack", "First TR is correct");
+				});
+				
+				test("Half word should not be considered in double quotes filter", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t1");
+					
+					//Conditions
+					setInput($table, 0, "\"Br\"").trigger("keyup.jQueryTableFilter");
+					
+					_same(getTRText, [$table, 0], "", "No result at all");
+				});
+				
+				test("Two words between double quotes should be considered a single filter query", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t1");
+					
+					//Conditions
+					setInput($table, 0, "\"Surname Brack\"").trigger("keyup.jQueryTableFilter");
+					
+					_same(getTRText, [$table, 0], "Richard Markson Surname Brack", "First TR is correct");
+				});
+				
+				test("Already hidden TRs should be ignored", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t1");
+					
+					//Conditiond
+					setInput($table, 0, "You can't see this!").trigger("keyup.jQueryTableFilter");
+					
+					_same(getTRText, [$table, 0], "", "No result at all");
+				});
+				
+				module("Table 2");
+				test("Trigger filter after a couple of seconds by passing the delay parameter greater than 0(zero)", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t2");
+					
+					//Conditions
+					setInput($table, 0, "nothing").trigger("keyup.jQueryTableFilter");
+					
+					//Nothing should happen now
+					_same(getTRText, [$table, 0], "Fagner Martins Brack", "First TR is correct before timeout");
+					
+					stop();
+					
+					setTimeout(function() {
+						//Now it should
+						start();
+						_same(getTRText, [$table, 0], "", "No result");
+					}, 500);
+					
+				});
+				
+				module("Table 3");
+				test("Passing custom columns", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t3");
+					
+					//Conditions
+					var $filterTDs = $table.find("thead:first tr:last th"); //get the last tr of the first thead
+					var $otherHeadInputs = $table.find("thead:eq(1) tr:last input");
+					
+					//Result
+					same($otherHeadInputs.length, 0, "There should be no input besides the first thead");
+					same($filterTDs.slice(0, 1).find("input").length, 0, "There should be no input in the first TH");
+					same($filterTDs.slice(1, 2).find("input").length, 1, "There should be one input in the second TH");
+					same($filterTDs.slice(2, 3).find("input").length, 1, "There should be one input in the third TH");
+					same($filterTDs.slice(3, 4).find("input").length, 1, "There should be one input in the fourth TH");
+					same($filterTDs.slice(4, 5).find("input").length, 1, "There should be one input in the fifth TH");
+					same($filterTDs.slice(5, 6).find("input").length, 0, "There should be no input in the sixth TH");
+				});
+				
+				test("If a tfoot already exists, the 'no results' message should be appended below the last tr of the tfoot", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t3");
+					
+					//Conditions
+					setInput($table, 0, "Any dummy text to get no result").trigger("keyup.jQueryTableFilter");
+					
+					//Result
+					same($table.find("tfoot tr").length, 2, "Should have 2 TRs in the tfoot");
+				});
+				
+				
+				test("Filtering ignoreCase === true", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t3");
+					
+					//Conditions
+					setInput($table, 0, "rev").trigger("keyup.jQueryTableFilter");
+					
+					//Result
+					_same(getTRText, [$table, 0], "80000", "First TR is correct");
+					_same(getTRText, [$table, 1], "10000", "Second TR is correct");
+				});
+				
+				test("The elements input, select and textarea that are inside a TR hidden by the plugin should be disabled. This way it's value will not be sent on submit.", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t3");
+					
+					//Conditions
+					setInput($table, 0, "special").trigger("keyup.jQueryTableFilter");
+					
+					//Result
+					same(getHiddenTD($table, 0, 2).find("input").prop("disabled"), true, "input is disabled when hidden");
+					same(getHiddenTD($table, 1, 2).find("select").prop("disabled"), true, "select is already disabled when hidden");
+					same(getHiddenTD($table, 2, 2).find("select").prop("disabled"), true, "select is disabled when hidden");
+					same(getHiddenTD($table, 3, 2).find("textarea").prop("disabled"), true, "textarea is disabled when hidden");
+				});
+				
+				test("The elements input, select and textarea previously disabled when hidden should be enabled for now (except the select not disabled by the plugin)", function() {
+					
+					//Initialize
+					//Conditions
+					var $table = eraseAllInputs("#t3", true);
+					
+					//Result
+					same(getVisibleTD($table, 0, 2).find("input").prop("disabled"), false, "input disabled when hidden should be enabled");
+					same(getVisibleTD($table, 1, 2).find("input").prop("disabled"), false, "input disabled when hidden should be enabled");
+					same(getVisibleTD($table, 2, 2).find("select").prop("disabled"), true, "select already disabled should stay that way");
+					same(getVisibleTD($table, 3, 2).find("select").prop("disabled"), false, "select disabled when hidden should be enabled");
+					same(getVisibleTD($table, 4, 2).find("textarea").prop("disabled"), false, "textarea disabled when hidden should be enabled");
+				});
+				
+				test("Complex test using double quote and spaces", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t3", true);
+					
+					//Conditions
+					setInput($table, 0, "1 \"revision\" th").trigger("keyup.jQueryTableFilter");
+					
+					//Result
+					_same(getTRText, [$table, 0], "9000", "The visible TR is correct");
+				});
+				
+				test("Custom message", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t3");
+					
+					//Conditions
+					setInput($table, 0, "Some stuff that does'nt exists").trigger("keyup.jQueryTableFilter");
+					
+					//Result
+					same($table.find("tfoot:first tr:eq(1) td:first").text().trim(), "Custom Message...", "Custom empty message is correct");
+				});
+				
+				test("has only one keyup.jQueryTableFilter bound", function() {
+					
+					//Initialize
+					//Conditions
+					var $table = eraseAllInputs("#t3");
+					
+					//Result
+					same(countEvents($table.find("thead:first input:first"), "keyup.jQueryTableFilter"), 1, "Only one event bound in the inputs");
+				});
+				
+				test("Multiple plugin calls in a single element", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t4");
+					
+					//Conditions
+					setInput($table, 0, "Something that does'nt exists").trigger("keyup.jQueryTableFilter");
+					
+					//Result
+					same(countEvents($table.find("thead:first input:first"), "keyup.jQueryTableFilter"), 1, "Only one event bound in the inputs");
+					same($table.find("thead input").length, 1, "There should have only one input");
+					same($table.find("tfoot:first tr:first td:first").text().trim(), "this should appear", "Should consider the parameters from the last call");
+				});
+			});
+			
+			//Using undocumented stuff, hope jQuery don't throw that away =(
+			function countEvents($element, str) {
+				var qtEvents = 0;
+				var events = $element.data('events');
+				var i = str.indexOf('.');
+				var type = null;
+				var namespace = null;
+				if(i !== -1) {
+					type = str.substring(0, i);
+					namespace = str.substring(i+1, str.length);
+				} else {
+					type = str;
+				}
+				
+				if($.isArray(events[type])) {
+					if(namespace !== null) {
+						$.each(events[type],function(index,event) {
+							if(event["namespace"] == namespace){
+								qtEvents++;
+							}
+						});
+					} else {
+						hasEventBound = true;
+					}
+				}
+			return qtEvents;
+			};
+			
+			function eraseAllInputs(selector, triggerEvent) {
+				var $table = $(selector);
+				var $inputs = $table.find("thead input").val("");
+				if(triggerEvent === true) {
+					$inputs.slice(0, 1).trigger("keyup.jQueryTableFilter");
+				}
+				return $table;
+			}
+			function eraseInput($table, colIndex) {
+				return setInput($table, colIndex, "");
+			}
+			function getTRText($table, trIndex) {
+				//get :visible elements
+				//The return should be trimmed
+				//get always the first tbody
+				return $table.find("tbody:first tr:visible:eq(" + trIndex + ") td").slice(0, 1).text().trim();
+			}
+			
+			//@param colIndex (The input index, not the TD)
+			function setInput($table, colIndex, value, headIndex) {
+				return $table.find("thead:first tr:last input").slice(colIndex, colIndex + 1).val(value);
+			}
+			
+			function getHiddenTD($table, trIndex, tdIndex) {
+				return $table.find("tbody:first tr:hidden:eq(" + trIndex + ") td:eq(" + tdIndex + ")");
+			}
+			
+			function getVisibleTD($table, trIndex, tdIndex) {
+				return $table.find("tbody:first tr:visible:eq(" + trIndex + ") td:eq(" + tdIndex + ")");
+			}
+		</script>
+	</head>
+	<body>
+		<h1 id="qunit-header">QUnit Test Suite</h1>
+		<h2 id="qunit-banner"></h2>
+		<div id="qunit-testrunner-toolbar"></div>
+		<h2 id="qunit-userAgent"></h2>
+		<ol id="qunit-tests"></ol>
+		<div id="qunit-fixture">test markup</div>
+		
+		<hr />
+		Table 1:
+		<table id="t1">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>City</th>
+					<th>Country</th>
+					<th>Age</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Fagner Brack</td>
+					<td>Montenegro</td>
+					<td>Brazil</td>
+					<td>21</td>
+				</tr>
+				<tr style="display: none">
+					<td>You can't see this!</td>
+					<td>You can't see this!</td>
+					<td>You can't see this!</td>
+					<td>You can't see this!</td>
+				</tr>
+				<tr>
+					<td>Steve P. Jobs</td>
+					<td>Los Altos</td>
+					<td>United States of America</td>
+					<td>56</td>
+				</tr>
+				<tr>
+					<td>Richard Markson Surname Brack</td>
+					<td>London</td>
+					<td>England</td>
+					<td>56</td>
+				</tr>
+			</tbody>
+		</table>
+		<hr />
+		Table 2:
+		<table id="t2">
+			<thead>
+				<tr>
+					<th>Nome</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Fagner Martins Brack</td>
+				</tr>
+			</tbody>
+		</table>
+		<hr />
+		Table 3:
+		<table id="t3">
+			<thead>
+				<tr>
+					<th>KM</th>
+					<th>Revisions</th>
+					<th>Column with several inputs</th>
+					<th>Time</th>
+					<th>Type</th>
+					<th>Links</th>
+				</tr>
+				<tr>
+					<th>This</th>
+					<th>is a custom TR</th>
+					<th>that should stay</th>
+					<th>above</th>
+					<th>the inputs</th>
+					<th>used to filter</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>80000</td>
+					<td>8th REVISION</td>
+					<td><input class="input" type="radio" /></td>
+					<td>96 months</td>
+					<td>NEW</td>
+					<td><a href="javascript:void(0)">Model</a></td>
+				</tr>
+				<tr>
+					<td>12000</td>
+					<td>MONTANA SPECIAL</td>
+					<td><input class="input" type="radio" /></td>
+					<td>12 months</td>
+					<td>OLD</td>
+					<td><a href="javascript:void(0)">Model</a></td>
+				</tr>
+				<tr>
+					<td>10000</td>
+					<td>9th REVISION</td>
+					<td>
+						<select class="input" style="height: 20px;" disabled="disabled">
+							<option value="teste">ANY TEXT</option>
+						</select>
+					</td>
+					<td>12 months</td>
+					<td>OLD</td>
+					<td><a href="javascript:void(0)">Model</a></td>
+				</tr>
+				<tr>
+					<td>7500</td>
+					<td>4th REVISION</td>
+					<td>
+						<select class="input" style="height: 20px;">
+							<option value="teste">ANY TEXT</option>
+						</select>
+					</td>
+					<td>5 months</td>
+					<td>NEW</td>
+					<td><a href="javascript:void(0)">Model</a></td>
+				</tr>
+				<tr>
+					<td>9000</td>
+					<td>1th REVISION</td>
+					<td>
+						<textarea>Any content here</textarea>
+					</td>
+					<td>2 months</td>
+					<td>NEW</td>
+					<td><a href="javascript:void(0)">Model</a></td>
+				</tr>
+			</tbody>
+			<thead>
+				<tr>
+					<th>KM</th>
+					<th>Revisions</th>
+					<th>Column with several inputs</th>
+					<th>Time</th>
+					<th>Type</th>
+					<th>Links</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>5000</td>
+					<td>10th REVISION</td>
+					<td><input class="input" type="checkbox" /></td>
+					<td>6 months</td>
+					<td>USADOS</td>
+					<td><a href="javascript:void(0)">Model</a></td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td>Footer col 0</td>
+					<td>Footer col 1</td>
+					<td>Footer col 2</td>
+					<td>Footer col 3</td>
+					<td>Footer col 4</td>
+					<td>Footer col 5</td>
+				</tr>
+			</tfoot>
+		</table>
+		<hr />
+		Table 4:
+		<table id="t4">
+			<thead>
+				<tr>
+					<th>col0</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>data0</td>
+				</tr>
+			</tbody>
+		</table>
+	</body>
+</html>
