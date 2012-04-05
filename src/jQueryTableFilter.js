@@ -1,5 +1,5 @@
 /**
- * jQuery Table Filter 0.5 (jQuery 1.7+)
+ * jQuery Table Filter 0.6 (jQuery 1.7+)
  * (c) 2012-2012 Fagner Martins Brack <fagnerbrack.com>
  * MIT license
  * 
@@ -14,7 +14,8 @@
 	$.fn.tableFilter = function(args) {
 		var options = $.extend({
 			inputClasses: undefined, //custom classes that will be set in the filter inputs that will be created
-			trClasses: undefined, //custom classes that will be set in the TR(s) that will be created to the filters
+			trClasses: undefined, //custom classes that will be set in the TR(s) that will be created to contain the filters
+			thClasses: undefined, //custom classes that will be set in the TH(s) that will be created to contain the filters
 			delay: 1000, //delay to apply the filter after typing (if the table has a huge number of content)
 			ignoreCase: false, //Verifies if jQuery Table Filter should ignore the case
 			emptyMessage: "There's no result to show", //Message when there's no result
@@ -36,11 +37,12 @@
 		function getFilterTR(colNumber) {
 			var inputClasses = option('inputClasses');
 			var trClasses = option('trClasses');
+			var thClasses = option('thClasses');
 			var columns = option('columns');
 			var str = [];
 			str.push("<tr class='" + ($.type(trClasses) === 'string'? trClasses : '') + "'>");
 				for(var i = 0; i<colNumber; i++) {
-					str.push("<th style='text-align: center; vertical-align: middle; padding: 0; margin: 0;'>");
+					str.push("<th class='" + ($.type(thClasses) === 'string'? thClasses : '') + "'>");
 						if(!$.isArray(columns) || !columns.length || columns.contains(i)) {
 							str.push("<input type='text' class='" + ($.type(inputClasses) === 'string'? inputClasses : '') + "'/>");
 						}
