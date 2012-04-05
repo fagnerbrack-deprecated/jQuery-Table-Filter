@@ -1,5 +1,5 @@
 /**
- * jQuery Table Filter 0.6 (jQuery 1.7+)
+ * jQuery Table Filter 1.0 (jQuery 1.7+)
  * (c) 2012-2012 Fagner Martins Brack <fagnerbrack.com>
  * MIT license
  * 
@@ -58,7 +58,7 @@
 		 */
 		function getFooterTR(colNumber) {
 			var str = [];
-			str.push("<tr class='syo-filter-info'>");
+			str.push("<tr class='filter-info'>");
 				str.push("<td colspan='" + colNumber + "'>");
 					str.push(options.emptyMessage);
 				str.push("</td>");
@@ -72,7 +72,7 @@
 		 */
 		function markTDs() {
 			var $this = $(this);
-			$this.data('filter-index', $this.index());
+			$this.data('jQueryTableFilter_index', $this.index());
 		};
 		
 		function acceptKey(e) {
@@ -117,7 +117,7 @@
 							index = $input.parent().index(); //Get the index of the TD not the input (cause it is possible that not all TDs have inputs)
 							$bodyTDs.each(function() {
 								var $thisTD = $(this);
-								var _index = $thisTD.data('filter-index');
+								var _index = $thisTD.data('jQueryTableFilter_index');
 								if(_index === index) {
 									var innerText = $thisTD.text().trim();
 									
@@ -137,7 +137,7 @@
 					var $tfoot = $table.find('tfoot:last');
 					if(!$tfoot.length) $tfoot = $('<tfoot />').appendTo($table.find('tbody:last').parent());
 					
-					var $infoTR = $tfoot.find('tr.syo-filter-info');
+					var $infoTR = $tfoot.find('tr.filter-info');
 					if($bodyTRs.filter(':visible').length === 0) {
 						if(!$infoTR.length) {
 							$tfoot.append(getFooterTR(colNumber)).show();
@@ -154,7 +154,7 @@
 				$TD.find('input').bind('keyup.jQueryTableFilter', function(e) {
 					if(acceptKey(e)) { //Verifies if the typed key is acceptable in the filter
 						var $input = $(this);
-						var filterTimeout = $input.data('syo_filter_timeout');
+						var filterTimeout = $input.data('jQueryTableFilter_timeout');
 						
 						if(filterTimeout !== undefined) {
 							clearTimeout(filterTimeout);
@@ -162,25 +162,25 @@
 						
 						//Set the timeout only if the delay is greater than zero
 						if(delay > 0) {
-							$input.data('syo_filter_timeout', setTimeout(_applyFilter, delay));
+							$input.data('jQueryTableFilter_timeout', setTimeout(_applyFilter, delay));
 						} else {
 							_applyFilter();
 						}
 					}
 				});
 			});
-			return $customTR;
+			return $customTR.data("jQueryTableFilter_tr", true);
 		};
 		
 		function hide($TRs) {
 			$TRs.not(':hidden').each(function() {
 				//Add a flag to the TRs that will be hidden and hide it
 				var $this = $(this);
-				$this.data('filter_hide', true);
+				$this.data('jqueryTableFilter_hide', true);
 				$this.find("input, select, textarea").each(function() {
 					var $_this = $(this);
 					if(!$_this.prop("disabled")) {
-						$_this.data("filter_disabled", true).prop("disabled", true)
+						$_this.data("jQueryTableFilter_disabled", true).prop("disabled", true)
 					}
 				});
 				$this.hide();
@@ -194,14 +194,14 @@
 				//Remove the flag of the hidden and disabled elements
 				$this.find("input, select, textarea").each(function() {
 					var $_this = $(this);
-					if($_this.data("filter_disabled") === true) {
+					if($_this.data("jQueryTableFilter_disabled") === true) {
 						$_this.removeProp("disabled");
 					}
 				});
 				
 				//Remove the flag of the hidden TRs and show it
-				if($this.data('filter_hide') === true) {
-					$this.removeData('filter_hide');
+				if($this.data('jqueryTableFilter_hide') === true) {
+					$this.removeData('jqueryTableFilter_hide');
 					$this.show();
 				}
 			});
@@ -281,7 +281,14 @@
 			var $thead = $table.find('thead:first');
 			var colNumber = $thead.find('tr:last th').length;
 			var $customTR = bind(getFilterTR(colNumber), $table);
+			var $lastHeadTR = $thead.find("tr:last");
 			
+			//If a tr created by another plugin instance already exists, remove it.
+			if($lastHeadTR.data("jQueryTableFilter_tr") === true) {
+				$lastHeadTR.remove();
+			}
+			
+			//Append the generated TR to the head
 			$thead.append($customTR);
 		});
 	return this;
