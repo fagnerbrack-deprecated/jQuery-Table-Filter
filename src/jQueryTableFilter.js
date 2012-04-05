@@ -16,7 +16,7 @@
 			inputClasses: undefined, //custom classes that will be set in the filter inputs that will be created
 			trClasses: undefined, //custom classes that will be set in the TR(s) that will be created to the filters
 			delay: 1000, //delay to apply the filter after typing (if the table has a huge number of content)
-			ignoreCase: true, //Verifies if jQuery Table Filter should ignore the case
+			ignoreCase: false, //Verifies if jQuery Table Filter should ignore the case
 			emptyMessage: "There's no result to show", //Message when there's no result
 			columns: [] //Index of the columns that will be filtered. If not especified consider all columns.
 		}, args);
@@ -100,7 +100,7 @@
 				var $TD = $(this);
 				
 				//Get the input of this TD
-				$TD.find('input').on('keydown', function(e) {
+				$TD.find('input').on('keydown.jQueryTableFilter', function(e) {
 					if(acceptKey(e)) { //Verifies if the typed key is acceptable in the filter
 						var $input = $(this);
 						var ignoreCase = option('ignoreCase');
@@ -166,6 +166,12 @@
 				//Add a flag to the TRs that will be hidden and hide it
 				var $this = $(this);
 				$this.data('filter_hide', true);
+				$this.find("input, select, textarea").each(function() {
+					var $_this = $(this);
+					if(!$this.prop("disabled")) {
+						$_this.data("filter_disabled", true).prop("disabled", true)
+					}
+				});
 				$this.hide();
 			});
 		};
@@ -179,6 +185,14 @@
 					$this.removeData('filter_hide');
 					$this.show();
 				}
+				
+				//Remove the flag of the hidden and disabled elements
+				$this.find("input, select, textarea").each(function() {
+					var $_this = $(this);
+					if($_this.data("filter_disable") === true) {
+						$this.removeProp("disabled");
+					}
+				});
 			});
 		};
 		
