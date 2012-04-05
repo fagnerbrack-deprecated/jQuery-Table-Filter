@@ -96,65 +96,74 @@
 			var $headTDs = $customTR.find('td');
 			var $allInputs = $headTDs.find('input');
 			var colNumber = $headTDs.length;
+			var ignoreCase = option('ignoreCase');
+			var delay = option('delay');
+			
 			$headTDs.each(function(index, element) {
 				var $TD = $(this);
+				var _applyFilter = function() {
+					var $TRsToHide = $();
+					show($bodyTRs);
+					
+					//Iterate between all inputs and filters each respective column
+					$allInputs.each(function(_i, el) {
+						var $input = $(el);
+						var inputVal = $input.val().trim();
+						var index;
+						
+						if(inputVal) {
+							index = $input.parent().index(); //Get the index of the TD not the input (cause it is possible that not all TDs have inputs)
+							$bodyTDs.each(function() {
+								var $thisTD = $(this);
+								var _index = $thisTD.data('filter-index');
+								if(_index === index) {
+									var innerText = $thisTD.text().trim();
+									
+									//If it did'nt match...
+									if(!compare(innerText, inputVal, ignoreCase)) {
+										$TRsToHide = $TRsToHide.add(this.parentNode); //...Add to hide the TR of this TD
+									}
+								}
+							});
+						}
+					});
+					
+					//Hide every marked TR
+					hide($TRsToHide);
+					
+					//Verifies if there's no TR to show
+					var $tfoot = $table.find('tfoot:last');
+					if(!$tfoot.length) $tfoot = $('<tfoot />').appendTo($table.find('tbody:last').parent());
+					
+					var $infoTR = $tfoot.find('tr.syo-filter-info');
+					if($bodyTRs.filter(':visible').length === 0) {
+						if(!$infoTR.length) {
+							$tfoot.append(getFooterTR(colNumber)).show();
+						} else {
+							$infoTR.show();
+						}
+					} else {
+						$infoTR.hide();
+					}
+				};
 				
 				//Get the input of this TD
-				$TD.find('input').bind('keydown.jQueryTableFilter', function(e) {
+				//Change event to keyup cause sometimes a backspace keydown caused the input to be cleared after the code has been executed
+				$TD.find('input').bind('keyup.jQueryTableFilter', function(e) {
 					if(acceptKey(e)) { //Verifies if the typed key is acceptable in the filter
 						var $input = $(this);
-						var ignoreCase = option('ignoreCase');
 						var filterTimeout = $input.data('syo_filter_timeout');
 						
 						if(filterTimeout !== undefined) {
 							clearTimeout(filterTimeout);
 						}
 						
-						$input.data('syo_filter_timeout', setTimeout(function() {
-							var $TRsToHide = $();
-							show($bodyTRs);
-							
-							//Iterate between all inputs and filters each respective column
-							$allInputs.each(function(_i, el) {
-								var $input = $(el);
-								var inputVal = $input.val().trim();
-								var index;
-								
-								if(inputVal) {
-									index = $input.parent().index(); //Get the index of the TD not the input (cause it is possible that not all TDs have inputs)
-									$bodyTDs.each(function() {
-										var $thisTD = $(this);
-										var _index = $thisTD.data('filter-index');
-										if(_index === index) {
-											var innerText = $thisTD.text().trim();
-											
-											//If it did'nt match...
-											if(!compare(innerText, inputVal, ignoreCase)) {
-												$TRsToHide = $TRsToHide.add(this.parentNode); //...Add to hide the TR of this TD
-											}
-										}
-									});
-								}
-							});
-							
-							//Hide every marked TR
-							hide($TRsToHide);
-							
-							//Verifies if there's no TR to show
-							var $tfoot = $table.find('tfoot:last');
-							if(!$tfoot.length) $tfoot = $('<tfoot />').appendTo($table.find('tbody:last').parent());
-							
-							var $infoTR = $tfoot.find('tr.syo-filter-info');
-							if($bodyTRs.filter(':visible').length === 0) {
-								if(!$infoTR.length) {
-									$tfoot.append(getFooterTR(colNumber)).show();
-								} else {
-									$infoTR.show();
-								}
-							} else {
-								$infoTR.hide();
-							}
-						}, option('delay')));
+						//Set the timeout only if the delay is greater than zero
+						if(delay > 0) {
+							$input.data('syo_filter_timeout', setTimeout(_applyFilter, delay));
+						} else {
+							_applyFilter();
+						}
 					}
 				});
 			});
