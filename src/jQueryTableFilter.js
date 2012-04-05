@@ -150,7 +150,7 @@
 				};
 				
 				//Get the input of this TD
-				//Change event to keyup cause sometimes a backspace keydown caused the input to be cleared after the code has been executed
+				//Change event to keyup. Sometimes a backspace keydown caused the input to be cleared after the code has been executed
 				$TD.find('input').bind('keyup.jQueryTableFilter', function(e) {
 					if(acceptKey(e)) { //Verifies if the typed key is acceptable in the filter
 						var $input = $(this);
