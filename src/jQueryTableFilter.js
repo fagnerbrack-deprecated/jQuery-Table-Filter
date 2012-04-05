@@ -100,7 +100,7 @@
 				var $TD = $(this);
 				
 				//Get the input of this TD
-				$TD.find('input').on('keydown.jQueryTableFilter', function(e) {
+				$TD.find('input').bind('keydown.jQueryTableFilter', function(e) {
 					if(acceptKey(e)) { //Verifies if the typed key is acceptable in the filter
 						var $input = $(this);
 						var ignoreCase = option('ignoreCase');
