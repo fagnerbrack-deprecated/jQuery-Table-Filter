@@ -1,5 +1,5 @@
 /**
- * jQuery Table Filter 1.0 (jQuery 1.7+)
+ * jQuery Table Filter 1.0.3 (jQuery 1.7+)
  * (c) 2012-2012 Fagner Martins Brack <fagnerbrack.com>
  * MIT license
  * 
