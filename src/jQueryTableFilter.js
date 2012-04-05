@@ -177,7 +177,7 @@
 				$this.data('filter_hide', true);
 				$this.find("input, select, textarea").each(function() {
 					var $_this = $(this);
-					if(!$this.prop("disabled")) {
+					if(!$_this.prop("disabled")) {
 						$_this.data("filter_disabled", true).prop("disabled", true)
 					}
 				});
@@ -189,19 +189,19 @@
 			$TRs.each(function() {
 				var $this = $(this);
 				
+				//Remove the flag of the hidden and disabled elements
+				$this.find("input, select, textarea").each(function() {
+					var $_this = $(this);
+					if($_this.data("filter_disabled") === true) {
+						$_this.removeProp("disabled");
+					}
+				});
+				
 				//Remove the flag of the hidden TRs and show it
 				if($this.data('filter_hide') === true) {
 					$this.removeData('filter_hide');
 					$this.show();
 				}
-				
-				//Remove the flag of the hidden and disabled elements
-				$this.find("input, select, textarea").each(function() {
-					var $_this = $(this);
-					if($_this.data("filter_disable") === true) {
-						$this.removeProp("disabled");
-					}
-				});
 			});
 		};
 		
