@@ -357,6 +357,16 @@
 					_same(getTRText, [$table, 0], "9000", "The visible TR is correct");
 				});
 				
+				test("has only one keyup.jQueryTableFilter bound", function() {
+					
+					//Initialize
+					//Conditions
+					var $table = eraseAllInputs("#t3");
+					
+					//Result
+					same(countEvents($table.find("thead:first input:first"), "keyup.jQueryTableFilter"), 1, "Only one event bound in the inputs");
+				});
+				
 				test("Custom message", function() {
 					
 					//Initialize
@@ -369,16 +379,7 @@
 					same($table.find("tfoot:first tr:eq(1) td:first").text().trim(), "Custom Message...", "Custom empty message is correct");
 				});
 				
-				test("has only one keyup.jQueryTableFilter bound", function() {
-					
-					//Initialize
-					//Conditions
-					var $table = eraseAllInputs("#t3");
-					
-					//Result
-					same(countEvents($table.find("thead:first input:first"), "keyup.jQueryTableFilter"), 1, "Only one event bound in the inputs");
-				});
-				
+				module("Table 4");
 				test("Multiple plugin calls in a single element", function() {
 					
 					//Initialize
