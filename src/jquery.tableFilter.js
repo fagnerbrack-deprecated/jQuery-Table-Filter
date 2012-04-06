@@ -1,5 +1,5 @@
 /**
- * jQuery Table Filter 1.0 (jQuery 1.7+)
+ * jQuery Table Filter 1.0.1 (jQuery 1.7+)
  * (c) 2012-2012 Fagner Martins Brack <fagnerbrack.com>
  * MIT license
  * 
@@ -195,7 +195,7 @@
 				$this.find("input, select, textarea").each(function() {
 					var $_this = $(this);
 					if($_this.data("jQueryTableFilter_disabled") === true) {
-						$_this.removeProp("disabled");
+						$_this.prop("disabled", false); //Just to clarify we should not use removeProp on native properties such as disabled
 					}
 				});
 				
