@@ -1,6 +1,6 @@
 jQuery tableFilter
 ==================
-*Requires [jQuery](http://jquery.com/)*
+*Requires [jQuery](http://jquery.com/)*  
 *Requires [utils](https://github.com/FagnerMartinsBrack/jQuery-Table-Filter/blob/master/src/utils.js)*
 
 * Given a table with thead and tbody, jQuery Table Filter creates an input below all TDs of theads that automatically filters the content based on the innerHTML of each TD of the tbody
