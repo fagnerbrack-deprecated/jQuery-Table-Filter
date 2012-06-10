@@ -8,29 +8,18 @@
 		<link rel="stylesheet" href="../qunit/qunit.css" media="all" charset="UTF-8" />
 		
 		<style type="text/css">
-			table {
-				border-spacing: 2px;
-			}
-			table td {
-				border: 1px dotted #000;
-				padding: 5px;
-			}
+		
+			/* Styles for manual testing */
+			table { border-spacing: 2px; }
+			table td { border: 1px dotted #000; padding: 5px; }
+			.filter-class { border: 1px solid #000; }
+			.input-class { background-color: #CCC; }
+			thead tr { background-color: #EEE; }
 			
-			.filter-class {
-				border: 1px solid #000;
-			}
-			
-			.input-class {
-				background-color: #CCC;
-			}
-			
-			thead tr {
-				background-color: #EEE;
-			}
 		</style>
 		
 		<script type="text/javascript" src="../qunit/qunit.js"></script>
-		<script type="text/javascript" src="../lib/jquery-1.7.1.js"></script>
+		<script type="text/javascript" src="../lib/jquery.js"></script>
 		<script type="text/javascript" src="../src/utils.js"></script>
 		<script type="text/javascript" src="../src/jquery.tableFilter.js"></script>
 		<script type="text/javascript" language="Javascript">
@@ -41,9 +30,9 @@
 					stop();
 					setTimeout(function() {
 						start();
-						return same(arg0.apply(null, arg1 || []), arg2, arg3);
+						return deepEqual(arg0.apply(null, arg1 || []), arg2, arg3);
 					}, 0);
-				}
+				};
 				
 				$("#t1").tableFilter({
 					inputClasses: 'input-class filter-class',
@@ -84,9 +73,9 @@
 					var $thsWithClasses = $table.find("thead th.th-class.filter-class");
 					
 					//Result
-					same($trsWithClasses.length, 1, "Testing TR classes");
-					same($inputsWithClasses.length, 4, "Testing input classes");
-					same($inputsWithClasses.length, 4, "Testing TH classes");
+					deepEqual($trsWithClasses.length, 1, "Testing TR classes");
+					deepEqual($inputsWithClasses.length, 4, "Testing input classes");
+					deepEqual($inputsWithClasses.length, 4, "Testing TH classes");
 				});
 				
 				test("ignoreCase is default false", function() {
@@ -281,13 +270,13 @@
 					var $otherHeadInputs = $table.find("thead:eq(1) tr:last input");
 					
 					//Result
-					same($otherHeadInputs.length, 0, "There should be no input besides the first thead");
-					same($filterTDs.slice(0, 1).find("input").length, 0, "There should be no input in the first TH");
-					same($filterTDs.slice(1, 2).find("input").length, 1, "There should be one input in the second TH");
-					same($filterTDs.slice(2, 3).find("input").length, 1, "There should be one input in the third TH");
-					same($filterTDs.slice(3, 4).find("input").length, 1, "There should be one input in the fourth TH");
-					same($filterTDs.slice(4, 5).find("input").length, 1, "There should be one input in the fifth TH");
-					same($filterTDs.slice(5, 6).find("input").length, 0, "There should be no input in the sixth TH");
+					deepEqual($otherHeadInputs.length, 0, "There should be no input besides the first thead");
+					deepEqual($filterTDs.slice(0, 1).find("input").length, 0, "There should be no input in the first TH");
+					deepEqual($filterTDs.slice(1, 2).find("input").length, 1, "There should be one input in the second TH");
+					deepEqual($filterTDs.slice(2, 3).find("input").length, 1, "There should be one input in the third TH");
+					deepEqual($filterTDs.slice(3, 4).find("input").length, 1, "There should be one input in the fourth TH");
+					deepEqual($filterTDs.slice(4, 5).find("input").length, 1, "There should be one input in the fifth TH");
+					deepEqual($filterTDs.slice(5, 6).find("input").length, 0, "There should be no input in the sixth TH");
 				});
 				
 				test("If a tfoot already exists, the 'no results' message should be appended below the last tr of the tfoot", function() {
@@ -299,7 +288,7 @@
 					setInput($table, 0, "Any dummy text to get no result").trigger("keyup.jQueryTableFilter");
 					
 					//Result
-					same($table.find("tfoot tr").length, 2, "Should have 2 TRs in the tfoot");
+					deepEqual($table.find("tfoot tr").length, 2, "Should have 2 TRs in the tfoot");
 				});
 				
 				
@@ -325,10 +314,10 @@
 					setInput($table, 0, "special").trigger("keyup.jQueryTableFilter");
 					
 					//Result
-					same(getHiddenTD($table, 0, 2).find("input").prop("disabled"), true, "input is disabled when hidden");
-					same(getHiddenTD($table, 1, 2).find("select").prop("disabled"), true, "select is already disabled when hidden");
-					same(getHiddenTD($table, 2, 2).find("select").prop("disabled"), true, "select is disabled when hidden");
-					same(getHiddenTD($table, 3, 2).find("textarea").prop("disabled"), true, "textarea is disabled when hidden");
+					deepEqual(getHiddenTD($table, 0, 2).find("input").prop("disabled"), true, "input is disabled when hidden");
+					deepEqual(getHiddenTD($table, 1, 2).find("select").prop("disabled"), true, "select is already disabled when hidden");
+					deepEqual(getHiddenTD($table, 2, 2).find("select").prop("disabled"), true, "select is disabled when hidden");
+					deepEqual(getHiddenTD($table, 3, 2).find("textarea").prop("disabled"), true, "textarea is disabled when hidden");
 				});
 				
 				test("The elements input, select and textarea previously disabled when hidden should be enabled for now (except the select not disabled by the plugin)", function() {
@@ -338,11 +327,11 @@
 					var $table = eraseAllInputs("#t3", true);
 					
 					//Result
-					same(getVisibleTD($table, 0, 2).find("input").prop("disabled"), false, "input disabled when hidden should be enabled");
-					same(getVisibleTD($table, 1, 2).find("input").prop("disabled"), false, "input disabled when hidden should be enabled");
-					same(getVisibleTD($table, 2, 2).find("select").prop("disabled"), true, "select already disabled should stay that way");
-					same(getVisibleTD($table, 3, 2).find("select").prop("disabled"), false, "select disabled when hidden should be enabled");
-					same(getVisibleTD($table, 4, 2).find("textarea").prop("disabled"), false, "textarea disabled when hidden should be enabled");
+					deepEqual(getVisibleTD($table, 0, 2).find("input").prop("disabled"), false, "input disabled when hidden should be enabled");
+					deepEqual(getVisibleTD($table, 1, 2).find("input").prop("disabled"), false, "input disabled when hidden should be enabled");
+					deepEqual(getVisibleTD($table, 2, 2).find("select").prop("disabled"), true, "select already disabled should stay that way");
+					deepEqual(getVisibleTD($table, 3, 2).find("select").prop("disabled"), false, "select disabled when hidden should be enabled");
+					deepEqual(getVisibleTD($table, 4, 2).find("textarea").prop("disabled"), false, "textarea disabled when hidden should be enabled");
 				});
 				
 				test("Complex test using double quote and spaces", function() {
@@ -364,7 +353,7 @@
 					var $table = eraseAllInputs("#t3");
 					
 					//Result
-					same(countEvents($table.find("thead:first input:first"), "keyup.jQueryTableFilter"), 1, "Only one event bound in the inputs");
+					deepEqual(countEvents($table.find("thead:first input:first"), "keyup.jQueryTableFilter"), 1, "Only one event bound in the inputs");
 				});
 				
 				test("Custom message", function() {
@@ -376,7 +365,7 @@
 					setInput($table, 0, "Some stuff that does'nt exists").trigger("keyup.jQueryTableFilter");
 					
 					//Result
-					same($table.find("tfoot:first tr:eq(1) td:first").text().trim(), "Custom Message...", "Custom empty message is correct");
+					deepEqual($table.find("tfoot:first tr:eq(1) td:first").text().trim(), "Custom Message...", "Custom empty message is correct");
 				});
 				
 				module("Table 4");
@@ -389,16 +378,16 @@
 					setInput($table, 0, "Something that does'nt exists").trigger("keyup.jQueryTableFilter");
 					
 					//Result
-					same(countEvents($table.find("thead:first input:first"), "keyup.jQueryTableFilter"), 1, "Only one event bound in the inputs");
-					same($table.find("thead input").length, 1, "There should have only one input");
-					same($table.find("tfoot:first tr:first td:first").text().trim(), "this should appear", "Should consider the parameters from the last call");
+					deepEqual(countEvents($table.find("thead:first input:first"), "keyup.jQueryTableFilter"), 1, "Only one event bound in the inputs");
+					deepEqual($table.find("thead input").length, 1, "There should have only one input");
+					deepEqual($table.find("tfoot:first tr:first td:first").text().trim(), "this should appear", "Should consider the parameters from the last call");
 				});
 			});
 			
-			//Using undocumented stuff, hope jQuery don't throw that away =(
+			//TODO check .data("events") compatibility with jQuery 1.8
 			function countEvents($element, str) {
 				var qtEvents = 0;
-				var events = $element.data('events');
+				var events = $element.data('events') || ($element._data ? $element._data("events") : {});
 				var i = str.indexOf('.');
 				var type = null;
 				var namespace = null;
@@ -423,6 +412,7 @@
 			return qtEvents;
 			};
 			
+			//Remove the value of all inputs
 			function eraseAllInputs(selector, triggerEvent) {
 				var $table = $(selector);
 				var $inputs = $table.find("thead input").val("");
@@ -431,25 +421,31 @@
 				}
 				return $table;
 			}
+			
+			//Remove the value of a specified input
 			function eraseInput($table, colIndex) {
 				return setInput($table, colIndex, "");
 			}
+			
+			//get text from ":visible" elements
+			//The return should be trimmed
+			//get always from the first tbody
 			function getTRText($table, trIndex) {
-				//get :visible elements
-				//The return should be trimmed
-				//get always the first tbody
 				return $table.find("tbody:first tr:visible:eq(" + trIndex + ") td").slice(0, 1).text().trim();
 			}
 			
-			//@param colIndex (The input index, not the TD)
+			//Set the value in a specified input
+			//colIndex arg is the input index, not the TD
 			function setInput($table, colIndex, value, headIndex) {
 				return $table.find("thead:first tr:last input").slice(colIndex, colIndex + 1).val(value);
 			}
 			
+			//Look for a hidden TD according to the index
 			function getHiddenTD($table, trIndex, tdIndex) {
 				return $table.find("tbody:first tr:hidden:eq(" + trIndex + ") td:eq(" + tdIndex + ")");
 			}
 			
+			//Look for a visible TD according to the index
 			function getVisibleTD($table, trIndex, tdIndex) {
 				return $table.find("tbody:first tr:visible:eq(" + trIndex + ") td:eq(" + tdIndex + ")");
 			}
@@ -463,6 +459,8 @@
 		<ol id="qunit-tests"></ol>
 		<div id="qunit-fixture">test markup</div>
 		
+		<hr />
+		Manual Testing:
 		<hr />
 		Table 1:
 		<table id="t1">
@@ -557,7 +555,7 @@
 					<td>10000</td>
 					<td>9th REVISION</td>
 					<td>
-						<select class="input" style="height: 20px;" disabled="disabled">
+						<select class="input" disabled="disabled">
 							<option value="teste">ANY TEXT</option>
 						</select>
 					</td>
@@ -569,7 +567,7 @@
 					<td>7500</td>
 					<td>4th REVISION</td>
 					<td>
-						<select class="input" style="height: 20px;">
+						<select class="input">
 							<option value="teste">ANY TEXT</option>
 						</select>
 					</td>
