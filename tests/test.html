@@ -84,7 +84,7 @@
 					var $table = eraseAllInputs("#t1");
 					
 					//Conditions
-					setInput($table, 0, "FAGNER").trigger("keyup.jQueryTableFilter");
+					setInput($table, 0, "FAGNER").trigger("keyup.tablefilter");
 					
 					//Result
 					_same(getTRText, [$table, 0], "", "No result at all");
@@ -97,7 +97,7 @@
 					
 					//Conditions
 					setInput($table, 0, "rack");
-					setInput($table, 3, "5").trigger("keyup.jQueryTableFilter");
+					setInput($table, 3, "5").trigger("keyup.tablefilter");
 					
 					//Result
 					_same(getTRText, [$table, 0], "Richard Markson Surname Brack", "First TR is correct");
@@ -109,7 +109,7 @@
 					var $table = $("#t1");
 					
 					//Conditions
-					eraseInput($table, 3).trigger("keyup.jQueryTableFilter");
+					eraseInput($table, 3).trigger("keyup.tablefilter");
 					
 					//Result
 					_same(getTRText, [$table, 0], "Fagner Brack", "First TR is correct");
@@ -134,7 +134,7 @@
 					var $table = eraseAllInputs("#t1");
 					
 					//Conditions
-					setInput($table, 2, "i").trigger("keyup.jQueryTableFilter");
+					setInput($table, 2, "i").trigger("keyup.tablefilter");
 					
 					//Conditions
 					_same(getTRText, [$table, 0], "Fagner Brack", "First TR is correct");
@@ -147,7 +147,7 @@
 					var $table = eraseAllInputs("#t1");
 					
 					//Conditions
-					setInput($table, 0, "Brack a").trigger("keyup.jQueryTableFilter");
+					setInput($table, 0, "Brack a").trigger("keyup.tablefilter");
 					
 					//Result
 					_same(getTRText, [$table, 0], "Fagner Brack", "First TR is correct");
@@ -160,7 +160,7 @@
 					var $table = $("#t1");
 					
 					//Conditions
-					setInput($table, 2, "a g").trigger("keyup.jQueryTableFilter");
+					setInput($table, 2, "a g").trigger("keyup.tablefilter");
 					
 					//Result
 					_same(getTRText, [$table, 0], "Richard Markson Surname Brack", "First TR is correct");
@@ -172,7 +172,7 @@
 					var $table = eraseAllInputs("#t1");
 					
 					//Conditions
-					setInput($table, 0, "                               ").trigger("keyup.jQueryTableFilter");
+					setInput($table, 0, "                               ").trigger("keyup.tablefilter");
 					
 					//Result
 					_same(getTRText, [$table, 0], "Fagner Brack", "First TR is correct");
@@ -186,7 +186,7 @@
 					var $table = eraseAllInputs("#t1");
 					
 					//Conditions
-					setInput($table, 0, "\"Brack\"").trigger("keyup.jQueryTableFilter");
+					setInput($table, 0, "\"Brack\"").trigger("keyup.tablefilter");
 					
 					_same(getTRText, [$table, 0], "Fagner Brack", "First TR is correct");
 					_same(getTRText, [$table, 1], "Richard Markson Surname Brack", "Second TR is correct");
@@ -199,7 +199,7 @@
 					
 					//Conditions
 					setInput($table, 0, "\"Brack\"");
-					setInput($table, 1, "o n r").trigger("keyup.jQueryTableFilter");
+					setInput($table, 1, "o n r").trigger("keyup.tablefilter");
 					
 					_same(getTRText, [$table, 0], "Fagner Brack", "First TR is correct");
 				});
@@ -210,7 +210,7 @@
 					var $table = eraseAllInputs("#t1");
 					
 					//Conditions
-					setInput($table, 0, "\"Br\"").trigger("keyup.jQueryTableFilter");
+					setInput($table, 0, "\"Br\"").trigger("keyup.tablefilter");
 					
 					_same(getTRText, [$table, 0], "", "No result at all");
 				});
@@ -221,7 +221,7 @@
 					var $table = eraseAllInputs("#t1");
 					
 					//Conditions
-					setInput($table, 0, "\"Surname Brack\"").trigger("keyup.jQueryTableFilter");
+					setInput($table, 0, "\"Surname Brack\"").trigger("keyup.tablefilter");
 					
 					_same(getTRText, [$table, 0], "Richard Markson Surname Brack", "First TR is correct");
 				});
@@ -232,7 +232,7 @@
 					var $table = eraseAllInputs("#t1");
 					
 					//Conditiond
-					setInput($table, 0, "You can't see this!").trigger("keyup.jQueryTableFilter");
+					setInput($table, 0, "You can't see this!").trigger("keyup.tablefilter");
 					
 					_same(getTRText, [$table, 0], "", "No result at all");
 				});
@@ -244,7 +244,7 @@
 					var $table = eraseAllInputs("#t2");
 					
 					//Conditions
-					setInput($table, 0, "nothing").trigger("keyup.jQueryTableFilter");
+					setInput($table, 0, "nothing").trigger("keyup.tablefilter");
 					
 					//Nothing should happen now
 					_same(getTRText, [$table, 0], "Fagner Martins Brack", "First TR is correct before timeout");
@@ -285,7 +285,7 @@
 					var $table = eraseAllInputs("#t3");
 					
 					//Conditions
-					setInput($table, 0, "Any dummy text to get no result").trigger("keyup.jQueryTableFilter");
+					setInput($table, 0, "Any dummy text to get no result").trigger("keyup.tablefilter");
 					
 					//Result
 					deepEqual($table.find("tfoot tr").length, 2, "Should have 2 TRs in the tfoot");
@@ -298,7 +298,7 @@
 					var $table = eraseAllInputs("#t3");
 					
 					//Conditions
-					setInput($table, 0, "rev").trigger("keyup.jQueryTableFilter");
+					setInput($table, 0, "rev").trigger("keyup.tablefilter");
 					
 					//Result
 					_same(getTRText, [$table, 0], "80000", "First TR is correct");
@@ -311,7 +311,7 @@
 					var $table = eraseAllInputs("#t3");
 					
 					//Conditions
-					setInput($table, 0, "special").trigger("keyup.jQueryTableFilter");
+					setInput($table, 0, "special").trigger("keyup.tablefilter");
 					
 					//Result
 					deepEqual(getHiddenTD($table, 0, 2).find("input").prop("disabled"), true, "input is disabled when hidden");
@@ -340,20 +340,20 @@
 					var $table = eraseAllInputs("#t3", true);
 					
 					//Conditions
-					setInput($table, 0, "1 \"revision\" th").trigger("keyup.jQueryTableFilter");
+					setInput($table, 0, "1 \"revision\" th").trigger("keyup.tablefilter");
 					
 					//Result
 					_same(getTRText, [$table, 0], "9000", "The visible TR is correct");
 				});
 				
-				test("has only one keyup.jQueryTableFilter bound", function() {
+				test("has only one keyup.tablefilter bound", function() {
 					
 					//Initialize
 					//Conditions
 					var $table = eraseAllInputs("#t3");
 					
 					//Result
-					deepEqual(countEvents($table.find("thead:first input:first"), "keyup.jQueryTableFilter"), 1, "Only one event bound in the inputs");
+					deepEqual(countEvents($table.find("thead:first input:first"), "keyup.tablefilter"), 1, "Only one event bound in the inputs");
 				});
 				
 				test("Custom message", function() {
@@ -362,7 +362,7 @@
 					var $table = eraseAllInputs("#t3");
 					
 					//Conditions
-					setInput($table, 0, "Some stuff that does'nt exists").trigger("keyup.jQueryTableFilter");
+					setInput($table, 0, "Some stuff that does'nt exists").trigger("keyup.tablefilter");
 					
 					//Result
 					deepEqual($table.find("tfoot:first tr:eq(1) td:first").text().trim(), "Custom Message...", "Custom empty message is correct");
@@ -375,10 +375,10 @@
 					var $table = eraseAllInputs("#t4");
 					
 					//Conditions
-					setInput($table, 0, "Something that does'nt exists").trigger("keyup.jQueryTableFilter");
+					setInput($table, 0, "Something that does'nt exists").trigger("keyup.tablefilter");
 					
 					//Result
-					deepEqual(countEvents($table.find("thead:first input:first"), "keyup.jQueryTableFilter"), 1, "Only one event bound in the inputs");
+					deepEqual(countEvents($table.find("thead:first input:first"), "keyup.tablefilter"), 1, "Only one event bound in the inputs");
 					deepEqual($table.find("thead input").length, 1, "There should have only one input");
 					deepEqual($table.find("tfoot:first tr:first td:first").text().trim(), "this should appear", "Should consider the parameters from the last call");
 				});
@@ -417,7 +417,7 @@
 				var $table = $(selector);
 				var $inputs = $table.find("thead input").val("");
 				if(triggerEvent === true) {
-					$inputs.slice(0, 1).trigger("keyup.jQueryTableFilter");
+					$inputs.slice(0, 1).trigger("keyup.tablefilter");
 				}
 				return $table;
 			}
