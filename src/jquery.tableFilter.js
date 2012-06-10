@@ -101,7 +101,7 @@
 			$headTHs.each(function( index, element ) {
 				
 				function _applyFilter() {
-					var innerText
+					var innerText,
 						$tfoot, $infoTR,
 						$TRsToHide = $();
 					
