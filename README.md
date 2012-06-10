@@ -6,7 +6,7 @@ jQuery tableFilter
 * Given a table with thead and tbody, jQuery Table Filter creates an input below all TDs of theads that automatically filters the content based on the innerHTML of each TD of the tbody  
 * The TRs that don't match with desired filter are hidden and any input inside any TD is disabled (the input is enabled when the TR is visible again)  
 * The filter verifies the content splitting each word as it is a different search ("A test" matches with "A - test" and "test A")  
-* The only requirement for the use of this plugin is that it is used ONLY in a table with at least a <thead>, <th> and <tbody>  
+* The only requirement for the use of this plugin is that it is used ONLY in a table with at least a &lt;thead&gt;, &lt;th&gt; and &lt;tbody&gt;  
 * It is created a TR that informs the user when a filter did not return any result. It is positioned below the last TR of the tfoot. If there's no tfoot, jQuery Table Filter creates it.  
 
 Parameters
