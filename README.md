@@ -1,7 +1,7 @@
 jQuery tableFilter
 ==================
 *Requires [jQuery](http://jquery.com/)*
-
+*Requires [utils](https://github.com/FagnerMartinsBrack/jQuery-Table-Filter/blob/master/src/utils.js)*
 
 * Given a table with thead and tbody, jQuery Table Filter creates an input below all TDs of theads that automatically filters the content based on the innerHTML of each TD of the tbody  
 * The TRs that don't match with desired filter are hidden and any input inside any TD is disabled (the input is enabled when the TR is visible again)  
