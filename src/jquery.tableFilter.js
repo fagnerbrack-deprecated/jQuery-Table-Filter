@@ -101,7 +101,8 @@
 			$headTHs.each(function( index, element ) {
 				
 				function _applyFilter() {
-					var $tfoot, $infoTR,
+					var innerText
+						$tfoot, $infoTR,
 						$TRsToHide = $();
 					
 					show($bodyTRs);
@@ -122,7 +123,7 @@
 									_index = $thisTD.data("tablefilter-index");
 								
 								if( _index === index ) {
-									var innerText = $thisTD.text().trim();
+									innerText = $thisTD.text().trim();
 									
 									//If it did'nt match...
 									if( !compare(innerText, inputVal, ignoreCase) ) {
