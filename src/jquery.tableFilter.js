@@ -40,7 +40,9 @@
 						if( !columns || $.isArray(columns) && columns.contains(i) ) {
 							str.push( getInputFilter("text") );
 						} else if( $.isPlainObject(columns) ) {
-							str.push( getInputFilter("select-one") );
+							if( columns[i] === "select-one" ) {
+								str.push( getInputFilter("select-one") );
+							}
 						}
 					str.push("</th>");
 				}
