@@ -1,5 +1,5 @@
 /*!
- * jQuery Table Filter 1.0.2 (jQuery 1.7+)
+ * jQuery Table Filter 1.1.0 (jQuery 1.7+)
  * Fagner Martins Brack <fagnerbrack.com>
  * MIT license
  * https://github.com/FagnerMartinsBrack/jQuery-Table-Filter
@@ -29,7 +29,6 @@
 		 */
 		function getFilterTR(colNumber) {
 			var i = 0,
-				inputClasses = option('inputClasses'),
 				trClasses = option('trClasses'),
 				thClasses = option('thClasses'),
 				columns = option('columns'),
@@ -38,13 +37,33 @@
 			str.push("<tr class='" + (typeof trClasses === "string" ? trClasses : "") + "'>");
 				for(; i<colNumber; i++) {
 					str.push("<th class='" + (typeof thClasses === "string" ? thClasses : "") + "'>");
-						if( !$.isArray(columns) || !columns.length || columns.contains(i) ) {
-							str.push("<input type='text' class='" + (typeof inputClasses === "string"? inputClasses : "") + "'/>");
+						if( !columns || $.isArray(columns) && columns.contains(i) ) {
+							str.push( getInputFilter("text") );
+						} else if( $.isPlainObject(columns) ) {
+							str.push( getInputFilter("select-one") );
 						}
 					str.push("</th>");
 				}
 			str.push("</tr>");
 		return $( str.join("") );
+		}
+		
+		/**
+		 * @param {String} inputType The type of input to be created
+		 * @returns {String} A string representing the input structure to be created
+		 */
+		function getInputFilter(inputType) {
+			
+			var ret,
+				inputClasses = option('inputClasses') || "";
+			
+			if(inputType === "text") {
+				ret = "<input type='text' class='" + inputClasses + "'/>"
+			} else if(inputType === "select-one") {
+				ret = "<select type='select-one' class='" + inputClasses + "'></select>";
+			}
+			
+		return ret;
 		}
 		
 		/**
@@ -84,6 +103,8 @@
 		}
 		
 		/**
+		 * Bind the events to the inputs and create the select input options
+		 * 
 		 * @param $customTR jQuery reference to the new TR that will have the filters
 		 * @param $bodyTRs jQuery reference to the table
 		 * 
@@ -93,12 +114,14 @@
 			var $bodyTRs = $table.find("tbody tr"),
 				$bodyTDs = $bodyTRs.find("td").each(eachTDs),
 				$headTHs = $customTR.find("th"),
-				$allInputs = $headTHs.find("input"),
+				$allInputs = $headTHs.find("input, select"),
 				colNumber = $headTHs.length,
 				ignoreCase = option("ignoreCase"),
 				delay = option("delay");
 			
 			$headTHs.each(function( index, element ) {
+				
+				var $TH = $(this);
 				
 				function _applyFilter() {
 					var innerText,
@@ -158,25 +181,76 @@
 					}
 				}
 				
-				//Get the input of this TD
-				//Change event to keyup. Sometimes a backspace keydown caused the input to be cleared after the code has been executed
-				$(this).find("input").bind( "keyup.tablefilter", function(e) {
+				function bindText(e) {
+					var $input;
+					
 					if( acceptKey(e) ) { //Verifies if the typed key is acceptable in the filter
-						var $input = $(this),
-							filterTimeout = $input.data("tablefilter-timeout");
-						
-						if( filterTimeout !== undefined ) {
-							clearTimeout(filterTimeout);
-						}
-						
-						//Set the timeout only if the delay is greater than zero
-						if( delay > 0 ) {
-							$input.data( "tablefilter-timeout", setTimeout(_applyFilter, delay) );
-						} else {
-							_applyFilter();
-						}
+						$input = $(this);
+						initFilter($input)
 					}
-				});
+				}
+				
+				function bindSelect() {
+					initFilter($(this));
+				}
+				
+				function initFilter($input) {
+					var filterTimeout = $input.data("tablefilter-timeout");
+					
+					if( filterTimeout !== undefined ) {
+						clearTimeout(filterTimeout);
+					}
+					
+					//Set the timeout only if the delay is greater than zero
+					if( delay > 0 ) {
+						$input.data( "tablefilter-timeout", setTimeout(_applyFilter, delay) );
+					} else {
+						_applyFilter();
+					}
+				}
+				
+				function createOptions($selectElement) {
+						var i = 0,
+							arrOptions = [],
+							options = "";
+					
+					if($selectElement.length) {
+						$bodyTDs.each(function() {
+							var innerText,
+								$thisTD = $(this),
+								_index = $thisTD.data("tablefilter-index");
+							
+							if( _index === index ) {
+								innerText = $thisTD.text().trim();
+								
+								if( $.inArray(innerText, arrOptions) === -1 ) {
+									arrOptions.push(innerText);
+								}
+							}
+						});
+						
+						//alphabetical
+						arrOptions.sort(function(a, b) {
+							return a > b;
+						});
+						
+						options += "<option selected='selected'></option>";
+						
+						for( ; i<arrOptions.length; i++ ) {
+							options += "<option value='" + arrOptions[i] + "'>" + arrOptions[i] + "</option>";
+						}
+						
+						$selectElement.append(options);
+					}
+					return $selectElement;
+				}
+				
+				//input
+				//Change event to keyup. Sometimes a backspace keydown caused the input to be cleared after the code has been executed
+				$TH.find("input").bind( "keyup.tablefilter", bindText);
+				
+				//select
+				createOptions($TH.find("select")).bind( "change.tableFilter", bindSelect );
 			});
 		return $customTR.data( "tablefilter-tr", true );
 		}

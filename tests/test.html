@@ -55,6 +55,12 @@
 					emptyMessage: "this should appear",
 					delay: 0
 				});
+				$("#t5").tableFilter({
+					columns: {
+						0: "select"
+					},
+					delay: 0
+				});
 				
 				var timeoutSpeed = 0;
 				
@@ -382,13 +388,47 @@
 					deepEqual($table.find("thead input").length, 1, "There should have only one input");
 					deepEqual($table.find("tfoot:first tr:first td:first").text().trim(), "this should appear", "Should consider the parameters from the last call");
 				});
+				
+				
+				module("Table 5");
+				test("Passing columns object - select input", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t5");
+					
+					//condtions
+					var $input = getInput($table, 0);
+					
+					//Result
+					deepEqual($input.get(0).nodeName.toLowerCase(), "select", "The input is a select");
+					deepEqual($input.prop("type"), "select-one", "The input type is a select-one");
+					
+					deepEqual($input.find("option").slice(1, 2).text(), "content 1", "The content should trimmed and should be correct");
+					deepEqual($input.find("option").slice(1, 2).val(), "content 1", "The value should be trimmed and should be equal to the text");
+					
+					deepEqual($input.find("option").slice(2, 3).text(), "content 2", "The option should be correct");
+					deepEqual($input.find("option").slice(3, 4).text(), "content 5", "The order should be alphabetical");
+					deepEqual($input.find("option").slice(4, 5).text(), "content 6", "The option should be correct");
+				});
+				test("Passing columns object - select input event", function() {
+					
+					//Initialize
+					var $table = eraseAllInputs("#t5");
+					
+					//condtions
+					var $input = setInput($table, 0, "content 6").trigger("change.tableFilter");
+					
+					//Result
+					deepEqual(getTRText($table, 0), "content 6", "The first TR should be correct");
+					deepEqual(getTRText($table, 1), "content 6", "The second TR should be correct");
+				});
 			});
 			
 			//TODO check .data("events") compatibility with jQuery 1.8
 			function countEvents($element, str) {
 				var qtEvents = 0;
-				var events = $element.data('events') || ($element._data ? $element._data("events") : {});
-				var i = str.indexOf('.');
+				var events = $element.data("events") || ($element._data ? $element._data("events") : {});
+				var i = str.indexOf(".");
 				var type = null;
 				var namespace = null;
 				if(i !== -1) {
@@ -435,9 +475,15 @@
 			}
 			
 			//Set the value in a specified input
-			//colIndex arg is the input index, not the TD
-			function setInput($table, colIndex, value, headIndex) {
-				return $table.find("thead:first tr:last input").slice(colIndex, colIndex + 1).val(value);
+			//inputIndex arg is the input index, not the TD
+			function setInput($table, inputIndex, value, headIndex) {
+				return $table.find("thead:first tr:last").find("input, select").slice(inputIndex, inputIndex + 1).val(value);
+			}
+			
+			//Return the input according to the index
+			//inputIndex arg is the input index, not the TD
+			function getInput($table, inputIndex) {
+				return $table.find("thead:first tr:last").find("input, select").slice(inputIndex, inputIndex + 1);
 			}
 			
 			//Look for a hidden TD according to the index
@@ -628,6 +674,57 @@
 			<tbody>
 				<tr>
 					<td>data0</td>
+				</tr>
+			</tbody>
+		</table>
+		<hr />
+		Table 5:
+		<table id="t5">
+			<thead>
+				<tr>
+					<th>First col</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						content 1
+					</td>
+				</tr>
+				<tr>
+					<td>
+						content 2
+					</td>
+				</tr>
+				<tr>
+					<td>
+						content 2
+					</td>
+				</tr>
+				<tr>
+					<td>
+						content 6
+					</td>
+				</tr>
+				<tr>
+					<td>
+						content 6
+					</td>
+				</tr>
+				<tr>
+					<td>
+						content 5
+					</td>
+				</tr>
+				<tr>
+					<td>
+						content 5
+					</td>
+				</tr>
+				<tr>
+					<td>
+						content 5
+					</td>
 				</tr>
 			</tbody>
 		</table>
