@@ -57,7 +57,8 @@
 				});
 				$("#t5").tableFilter({
 					columns: {
-						0: "select-one"
+						0: "select-one",
+						1: "text"
 					},
 					delay: 0
 				});
@@ -422,6 +423,17 @@
 					deepEqual(getTRText($table, 0), "content 6", "The first TR should be correct");
 					deepEqual(getTRText($table, 1), "content 6", "The second TR should be correct");
 				});
+				test("Passing columns object - text input", function() {
+					//Initialize
+					var $table = eraseAllInputs("#t5");
+					
+					//condtions
+					var $input = getInput($table, 1);
+					
+					//Result
+					deepEqual($input.get(0).nodeName.toLowerCase(), "input", "The input is a input");
+					deepEqual($input.prop("type"), "text", "The input type is text");
+				});
 			});
 			
 			//TODO check .data("events") compatibility with jQuery 1.8
@@ -683,10 +695,14 @@
 			<thead>
 				<tr>
 					<th>First col</th>
+					<th>Second col</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
+					<td>
+						content 1
+					</td>
 					<td>
 						content 1
 					</td>
@@ -695,6 +711,9 @@
 					<td>
 						content 2
 					</td>
+					<td>
+						content 2
+					</td>
 				</tr>
 				<tr>
 					<td>
@@ -705,6 +724,9 @@
 					<td>
 						content 6
 					</td>
+					<td>
+						content 6
+					</td>
 				</tr>
 				<tr>
 					<td>
@@ -715,13 +737,22 @@
 					<td>
 						content 5
 					</td>
-				</tr>
-				<tr>
 					<td>
 						content 5
 					</td>
 				</tr>
 				<tr>
+					<td>
+						content 5
+					</td>
+					<td>
+						content 5
+					</td>
+				</tr>
+				<tr>
+					<td>
+						content 5
+					</td>
 					<td>
 						content 5
 					</td>
