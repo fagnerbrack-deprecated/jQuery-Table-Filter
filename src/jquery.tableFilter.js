@@ -1,10 +1,13 @@
 /*!
- * jQuery Table Filter 1.1.0 (jQuery 1.7+)
- * Fagner Martins Brack <fagnerbrack.com>
- * MIT license
- * https://github.com/FagnerMartinsBrack/jQuery-Table-Filter
- */
+* jQuery Table Filter 1.1.1 (jQuery 1.7+)
+* Fagner Martins Brack <fagnerbrack.com>
+* MIT license
+* https://github.com/FagnerMartinsBrack/jQuery-Table-Filter
+*/
 (function( $, undefined ) {
+	
+	"use strict";
+	
 	$.fn.tableFilter = function(args) {
 		var options = $.extend({
 			
@@ -24,9 +27,9 @@
 		}
 		
 		/**
-		 * @param colNumber The number of TDs in the table's thead
-		 * @returns {jQuery} A jQuery reference to the new TR that will have the filters
-		 */
+		* @param colNumber The number of TDs in the table's thead
+		* @returns {jQuery} A jQuery reference to the new TR that will have the filters
+		*/
 		function getFilterTR(colNumber) {
 			var i = 0,
 				trClasses = option('trClasses'),
@@ -49,16 +52,16 @@
 		}
 		
 		/**
-		 * @param {String} inputType The type of input to be created
-		 * @returns {String} A string representing the input structure to be created
-		 */
+		* @param {String} inputType The type of input to be created
+		* @returns {String} A string representing the input structure to be created
+		*/
 		function getInputFilter(inputType) {
 			
 			var ret,
 				inputClasses = option('inputClasses') || "";
 			
 			if(inputType === "text") {
-				ret = "<input type='text' class='" + inputClasses + "'/>"
+				ret = "<input type='text' class='" + inputClasses + "'/>";
 			} else if(inputType === "select-one") {
 				ret = "<select type='select-one' class='" + inputClasses + "'></select>";
 			}
@@ -67,9 +70,9 @@
 		}
 		
 		/**
-		 * @param colNumber Greater number of TDs in the table (to set the colspan)
-		 * @returns {jQuery} A jQuery reference to the TR that will appear in the footer when a filter shows no TR
-		 */
+		* @param colNumber Greater number of TDs in the table (to set the colspan)
+		* @returns {jQuery} A jQuery reference to the TR that will appear in the footer when a filter shows no TR
+		*/
 		function getFooterTR(colNumber) {
 			var str = [];
 			str.push("<tr class='filter-info'>");
@@ -81,18 +84,18 @@
 		}
 		
 		/**
-		 * Store the TD index to avoid a DOM check every time
-		 */
+		* Store the TD index to avoid a DOM check every time
+		*/
 		function eachTDs() {
 			var $td = $(this);
 			$td.data( "tablefilter-index", $td.index() );
 		}
 		
 		/**
-		 * Given a jQuery event object, return false if the key pressed matches with the map
-		 * 
-		 * @param {Object} The Event Object
-		 */
+		* Given a jQuery event object, return false if the key pressed matches with the map
+		* 
+		* @param {Object} The Event Object
+		*/
 		function acceptKey(e) {
 			return !(e.keyCode in {
 				16: "shift",
@@ -103,13 +106,13 @@
 		}
 		
 		/**
-		 * Bind the events to the inputs and create the select input options
-		 * 
-		 * @param $customTR jQuery reference to the new TR that will have the filters
-		 * @param $bodyTRs jQuery reference to the table
-		 * 
-		 * @returns {jQuery} The $customTR as a jQuery Object
-		 */
+		* Bind the events to the inputs and create the select input options
+		* 
+		* @param $customTR jQuery reference to the new TR that will have the filters
+		* @param $bodyTRs jQuery reference to the table
+		* 
+		* @returns {jQuery} The $customTR as a jQuery Object
+		*/
 		function bind( $customTR, $table ) {
 			var $bodyTRs = $table.find("tbody tr"),
 				$bodyTDs = $bodyTRs.find("td").each(eachTDs),
@@ -186,7 +189,7 @@
 					
 					if( acceptKey(e) ) { //Verifies if the typed key is acceptable in the filter
 						$input = $(this);
-						initFilter($input)
+						initFilter($input);
 					}
 				}
 				
@@ -256,10 +259,10 @@
 		}
 		
 		/**
-		 * Add a flag to the TRs that will be hidden and hide it
-		 * 
-		 * @param {jQuery} A jQuery Object with the TRs to be hidden
-		 */
+		* Add a flag to the TRs that will be hidden and hide it
+		* 
+		* @param {jQuery} A jQuery Object with the TRs to be hidden
+		*/
 		function hide($TRs) {
 			$TRs.not(":hidden").each(function() {
 				var $tr = $(this)
@@ -277,10 +280,10 @@
 		}
 		
 		/**
-		 * Show the given TRs
-		 * 
-		 * @param {jQuery} A jQuery Object with the TRs to be hidden
-		 */
+		* Show the given TRs
+		* 
+		* @param {jQuery} A jQuery Object with the TRs to be hidden
+		*/
 		function show($TRs) {
 			$TRs.each(function() {
 				var $tr = $(this);
@@ -302,11 +305,11 @@
 		}
 		
 		/**
-		 * Separate the quoted search from the general search
-		 * 
-		 * @param {String} str The string to be tested
-		 * @returns {Array}
-		 */
+		* Separate the quoted search from the general search
+		* 
+		* @param {String} str The string to be tested
+		* @returns {Array}
+		*/
 		function splitQuotes(str) {
 			var matches,
 				reg = new RegExp("([ ]?\")([^\"*]*)(\"[ ]?)", "g"),
@@ -322,11 +325,11 @@
 		}
 		
 		/**
-		 * Split to treat each search as a separate one
-		 * 
-		 * @param {String} values The content of the search
-		 * @returns {String} An array with each independent search
-		 */
+		* Split to treat each search as a separate one
+		* 
+		* @param {String} values The content of the search
+		* @returns {String} An array with each independent search
+		*/
 		function splitValues(values) {
 			
 			var i, trimmedVal,
@@ -351,13 +354,13 @@
 		}
 		
 		/**
-		 * Comparator method to check if the result of the filter matches with the column text
-		 * 
-		 * @param {String} text The innerHTML of the TD
-		 * @param {String} val The typed value to filter this column
-		 * @param {Boolean} ignoreCase If the compare should be case-sensitive
-		 * @returns {Boolean} If the values match with the compare rule within the given text
-		 */
+		* Comparator method to check if the result of the filter matches with the column text
+		* 
+		* @param {String} text The innerHTML of the TD
+		* @param {String} val The typed value to filter this column
+		* @param {Boolean} ignoreCase If the compare should be case-sensitive
+		* @returns {Boolean} If the values match with the compare rule within the given text
+		*/
 		function compare( text, values, ignoreCase ) {
 			var val, l,
 				c = 0,
@@ -384,13 +387,13 @@
 		}
 		
 		/**
-		 * Check if the value matches with any word inside the string
-		 * 
-		 * @param {String} text The content of the TD
-		 * @param {String} val The value to be compared
-		 * @param {Boolean} ignoreCase if the compare should be made ignoring the case
-		 * @returns {Boolean} If the given val is contained inside the text
-		 */
+		* Check if the value matches with any word inside the string
+		* 
+		* @param {String} text The content of the TD
+		* @param {String} val The value to be compared
+		* @param {Boolean} ignoreCase if the compare should be made ignoring the case
+		* @returns {Boolean} If the given val is contained inside the text
+		*/
 		function contains( text, val, ignoreCase ) {
 			
 			function _hasMatch(index) {
@@ -398,10 +401,10 @@
 					matchRight = index + val.length >= text.length || text.substring( index + val.length, index + val.length + 1 ) === " ";
 				
 				return matchLeft && matchRight;
-			};
+			}
 			
 			return ignoreCase ? _hasMatch( text.toUpperCase().indexOf(val.toUpperCase()) ) : _hasMatch( text.indexOf(val) );
-		};
+		}
 		
 		$(this).each(function() {
 			var $table = $(this),
