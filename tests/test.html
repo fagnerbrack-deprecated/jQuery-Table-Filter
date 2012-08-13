@@ -436,10 +436,9 @@
 				});
 			});
 			
-			//TODO check .data("events") compatibility with jQuery 1.8
 			function countEvents($element, str) {
 				var qtEvents = 0;
-				var events = $element.data("events") || ($element._data ? $element._data("events") : {});
+				var events = $._data($element[0], "events");
 				var i = str.indexOf(".");
 				var type = null;
 				var namespace = null;
